@@ -38,6 +38,11 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            nvm use 24
+
             cd /var/www/html/project-nestjs
 
             git pull origin main
@@ -46,4 +51,6 @@ jobs:
 
             yarn build
 
-            pm2 reload ecosystem.config.js
+            pm2 reload project-nestjs --update-env
+
+            pm2 save
