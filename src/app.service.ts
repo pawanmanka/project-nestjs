@@ -1,20 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException  } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello() {
-    return {
-      success: true,
-      statusCode: 200,
-      message: 'Hello World!',
-      data: {
-        name: 'NestJS API',
-        version: '1.0.0',
-      },
-    };
-  }
-  getUsers() {
-    const users = [
+   private users = [
       {
         id: 1,
         name: "Rahul Sharma",
@@ -96,11 +84,38 @@ export class AppService {
         status: "active"
       }
     ];
+  getUserById(id: number) {
+    const user = this.users.find((item) => item.id === id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      success: true,
+      statusCode: 200,
+      message: 'User fetched successfully',
+      data: user,
+    };
+  }
+  getHello() {
+    return {
+      success: true,
+      statusCode: 200,
+      message: 'Hello World!',
+      data: {
+        name: 'NestJS API',
+        version: '1.0.0',
+      },
+    };
+  }
+  getUsers() {
+   
     return {
       success: true,
       statusCode: 200,
       message: 'User list fetched successfully!',
-      data:users,
+      data:this.users,
     };
   }
 }
