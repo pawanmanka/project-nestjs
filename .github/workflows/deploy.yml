@@ -17,16 +17,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: yarn
+
+      - name: Install Yarn
+        run: npm install -g yarn
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Run tests
-        run: npm test -- --runInBand
+        run: yarn test --runInBand
 
       - name: Build application
-        run: npm run build
+        run: yarn build
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
@@ -35,12 +38,12 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /var/www/nest-api
+            cd /var/www/html/project-nestjs
 
             git pull origin main
 
-            npm ci
+            yarn install --frozen-lockfile
 
-            npm run build
+            yarn build
 
             pm2 reload ecosystem.config.js
